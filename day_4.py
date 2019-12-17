@@ -19,8 +19,7 @@ def grouping_allowed(password):
         digit_counter[number] += 1
 
     # look for two adjacent digits that aren't part of a larger group
-    if 2 in digit_counter.values():
-        return True
+    return 2 in digit_counter.values()
 
 
 def main():
