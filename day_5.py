@@ -11,17 +11,17 @@ def parse_intcode(instruction):
     intcode = list(str(instruction))
 
     # pad with 0s
-    if len(intcode) < 5:
-        for i in range(0, (5-len(intcode))):
-            intcode.insert(0, '0')
+    for i in range(0, (5-len(intcode))):
+        intcode.insert(0, '0')
     return intcode
 
 
 def read_opcodes(array):
-    input = 1
+    input = 5
 
     i = 0
-    while array[i] != 99:
+    running = True
+    while running:
         instruction = parse_intcode(array[i])
         p1 = i+1
         p2 = i+2
@@ -29,10 +29,11 @@ def read_opcodes(array):
         p3_mode = instruction[0]
         p2_mode = instruction[1]
         p1_mode = instruction[2]
-        opcode = int(str(instruction[3]) + str(instruction[4]))
+        opcode = int(instruction[3] + instruction[4])
 
         if opcode == 99:
             print('finished')
+            running = False
             return
 
         elif opcode == 1:
@@ -48,12 +49,41 @@ def read_opcodes(array):
             i += 2 
 
         elif opcode == 4:
-            print(array[array[p1]])
+            print(parameter_value(array, array[p1], p1_mode))
             i += 2
 
-        else:
+        elif opcode == 5:
+            print('opcode 5')
+            if parameter_value(array, array[p1], p1_mode) != 0:
+                i = parameter_value(array, array[p2], p2_mode)
+            else:
+                i += 3
 
-            print("Something went wrong")
+        elif opcode == 6:
+            print('opcode 6')
+            if parameter_value(array, array[p1], p1_mode) == 0:
+                i = parameter_value(array, array[p2], p2_mode)
+            else:
+                i += 3
+
+        elif opcode == 7:
+            print('opcode 7')
+            if parameter_value(array, array[p1], p1_mode) < parameter_value(array, array[p2], p2_mode):
+                array[array[p3]] = 1
+            else:
+                array[array[p3]] = 0
+            i += 4
+
+        elif opcode == 8:
+            print('opcode 8')
+            if parameter_value(array, array[p1], p1_mode) == parameter_value(array, array[p2], p2_mode):
+                array[array[p3]] = 1
+            else:
+                array[array[p3]] = 0
+            i += 4
+
+        else:
+            print("Something went wrong, opcode: ", opcode, instruction)
             i += 4
 
 
