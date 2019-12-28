@@ -10,10 +10,13 @@ def adjust_origin(origin, asteroid):
 
 def find_max_visible(data):
     max_visible = 0
-    for potential_base in data.values():
-        if len(set(potential_base)) > max_visible:
-            max_visible = len(set(potential_base))
-    return max_visible
+    base_location = ()
+
+    for potential_base in data:
+        if len(set(data[potential_base])) > max_visible:
+            max_visible = len(set(data[potential_base]))
+            base_location = potential_base
+    return max_visible, base_location
 
 
 def asteroid_distances(data):
@@ -45,7 +48,9 @@ def main():
     data = parse_input('day_10_input')
     neighbors = asteroid_distances(data)
 
-    print(find_max_visible(neighbors))
+    max_visible, base_location = find_max_visible(neighbors)
+    print(max_visible)
+    print(base_location)
 
 
 if __name__ == '__main__':
